@@ -1,28 +1,23 @@
 import pygame
 
-x, n = input().split()
+w, n = input().split()
 
 
-def draw_rect(black, x_r, y_r):
-    if black:
-        color = pygame.Color('#000000')
-    else:
-        color = pygame.Color('#ffffff')
-    pygame.draw.rect(screen, color, (x_r, y_r, a, a))
+def draw_ci(color, cent, radius):
+    pygame.draw.circle(screen, color, cent, radius)
 
 
 if __name__ == '__main__':
     # инициализация Pygame:
     pygame.init()
-    pygame.display.set_caption('Крест')
+    pygame.display.set_caption('Мишень')
     # размеры окна:
     flag = True
     try:
-        assert '.' not in x and '.' not in n
-        x = int(x)
+        assert '.' not in w and '.' not in n
+        w = int(w)
         n = int(n)
-        assert x % n == 0
-        assert x < 800
+        assert w * n * 2 < 800
     except AssertionError:
         print('Неправильный формат ввода')
         flag = False
@@ -30,24 +25,17 @@ if __name__ == '__main__':
         print('Неправильный формат ввода')
         flag = False
     if flag:
-        a = x // n
-        black_str = True
-        start_black = True
-        size = width, height = x, x
+        colors = ['red', 'green', 'blue']
+        size = width, height = w * n * 2, w * n * 2
+        center = w * n, w * n
+        rad = w * n
         # screen — холст, на котором нужно рисовать:
         screen = pygame.display.set_mode(size)
         screen.fill((0, 0, 0))
         # формирование кадра:
         # команды рисования на холсте
-        for i in range(1, n + 1):
-            for j in range(n):
-                draw_rect(black_str, j * a, height - i * a)
-                black_str = not black_str
-            start_black = not start_black
-            if start_black:
-                black_str = True
-            else:
-                black_str = False
+        for i in range(n):
+            draw_ci(colors[i % 3], center, rad - i * w)
         # ...
         # смена (отрисовка) кадра:
         pygame.display.flip()
