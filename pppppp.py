@@ -40,8 +40,8 @@ if __name__ == '__main__':
         # формирование кадра:
         # команды рисования на холсте
         for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                draw_rect(black_str, width - j * a, height - i * a)
+            for j in range(n):
+                draw_rect(black_str, j * a, height - i * a)
                 black_str = not black_str
             start_black = not start_black
             if start_black:
