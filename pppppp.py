@@ -2,51 +2,45 @@ import pygame
 from math import sin, cos, pi
 
 
-def vent(a, color):
-    # 1
-    pygame.draw.polygon(screen, color,
-                        ((w // 2, h // 2),
-                         (int(x + le * sin(23 * pi / 12 + a)), int(y - le * cos(23 * pi / 12 + a))),
-                         (int(x + le * sin(pi / 12 + a)), int(y - le * cos(pi / 12 + a)))))
-    # 2
-    pygame.draw.polygon(screen, color,
-                        ((w // 2, h // 2),
-                         (int(x + le * sin(7 * pi / 12 + a)), int(y - le * cos(7 * pi / 12 + a))),
-                         (int(x + le * sin(3 * pi / 4 + a)), int(y - le * cos(3 * pi / 4 + a)))))
-    # 3
-    pygame.draw.polygon(screen, color,
-                        ((w // 2, h // 2),
-                         (int(x + le * sin(5 * pi / 4 + a)), int(y - le * cos(5 * pi / 4 + a))),
-                         (int(x + le * sin(17 * pi / 12 + a)), int(y - le * cos(17 * pi / 12 + a)))))
-    # center
-    pygame.draw.circle(screen, color, (w // 2, h // 2), 10)
-
-
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Решение')
-    size = w, h = 201, 201
+    size = width, height = 501, 501
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
-    x = w // 2
-    le = 70 * sin(5 * pi / 12)
-    y = h // 2
-    v = 0
-    alp = 0
-    clock = pygame.time.Clock()
-    fps = 1000
+    screen2 = pygame.Surface(screen.get_size())
+    drawing = False
+    stack_list = []
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    v += 5 * pi / 18
-                elif event.button == 3:
-                    v -= 5 * pi / 18
-        alp += clock.tick(fps) * v / 1000
-        screen.fill((0, 0, 0))
-        vent(alp, '#ffffff')
+                drawing = True
+                stack_list.append([event.pos[0], event.pos[1], 0, 0])
+            if event.type == pygame.MOUSEBUTTONUP:
+                screen2.blit(screen, (0, 0))
+                drawing = False
+            if event.type == pygame.MOUSEMOTION:
+                if drawing:
+                    stack_list[-1][-2] = event.pos[0] - stack_list[-1][0]
+                    stack_list[-1][-1] = event.pos[1] - stack_list[-1][1]
+            if event.type == pygame.KEYDOWN:
+                if event.key == 122 and event.mod == 4160:
+                    try:
+                        stack_list.pop()
+                    except IndexError:
+                        pass
+                    screen2.fill(pygame.Color('black'))
+                    for i in stack_list:
+                        if i[2] > 0 and stack_list[-1][3] > 0:
+                            pygame.draw.rect(screen2, (0, 0, 255), ((i[0], i[1]), (i[2], i[3])), 5)
+        screen.fill(pygame.Color('black'))
+        screen.blit(screen2, (0, 0))
+        if drawing:
+            if stack_list[-1][2] > 0 and stack_list[-1][3] > 0:
+                pygame.draw.rect(screen, (0, 0, 255), ((stack_list[-1][0], stack_list[-1][1]),
+                                                       (stack_list[-1][2], stack_list[-1][3])), 5)
         pygame.display.flip()
     pygame.quit()
