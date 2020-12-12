@@ -1,5 +1,32 @@
 import pygame
-from math import sin, cos, pi
+
+
+class Board:
+    # создание поля
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.board = [[0] * width for _ in range(height)]
+        # значения по умолчанию
+        self.left = 10
+        self.top = 10
+        self.cell_size = 30
+
+    # настройка внешнего вида
+    def set_view(self, left, top, cell_size):
+        self.left = left
+        self.top = top
+        self.cell_size = cell_size
+
+    def render(self, screen):
+        x = self.left
+        y = self.top
+        for i in range(self.height):
+            for j in range(self.width):
+                pygame.draw.rect(screen, 'white', (x, y, self.cell_size, self.cell_size), 1)
+                x += self.cell_size
+            x = self.left
+            y += self.cell_size
 
 
 if __name__ == '__main__':
@@ -8,39 +35,14 @@ if __name__ == '__main__':
     size = width, height = 501, 501
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
-    screen2 = pygame.Surface(screen.get_size())
-    drawing = False
-    stack_list = []
+    board = Board(4, 3)
+    board.set_view(100, 100, 50)
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                drawing = True
-                stack_list.append([event.pos[0], event.pos[1], 0, 0])
-            if event.type == pygame.MOUSEBUTTONUP:
-                screen2.blit(screen, (0, 0))
-                drawing = False
-            if event.type == pygame.MOUSEMOTION:
-                if drawing:
-                    stack_list[-1][-2] = event.pos[0] - stack_list[-1][0]
-                    stack_list[-1][-1] = event.pos[1] - stack_list[-1][1]
-            if event.type == pygame.KEYDOWN:
-                if event.key == 122 and event.mod == 4160:
-                    try:
-                        stack_list.pop()
-                    except IndexError:
-                        pass
-                    screen2.fill(pygame.Color('black'))
-                    for i in stack_list:
-                        if i[2] > 0 and stack_list[-1][3] > 0:
-                            pygame.draw.rect(screen2, (0, 0, 255), ((i[0], i[1]), (i[2], i[3])), 5)
-        screen.fill(pygame.Color('black'))
-        screen.blit(screen2, (0, 0))
-        if drawing:
-            if stack_list[-1][2] > 0 and stack_list[-1][3] > 0:
-                pygame.draw.rect(screen, (0, 0, 255), ((stack_list[-1][0], stack_list[-1][1]),
-                                                       (stack_list[-1][2], stack_list[-1][3])), 5)
+        screen.fill((0, 0, 0))
+        board.render(screen)
         pygame.display.flip()
     pygame.quit()
