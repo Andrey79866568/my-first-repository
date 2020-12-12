@@ -21,7 +21,7 @@ class Board:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.board = [[False] * width for _ in range(height)]
+        self.board = [['black'] * width for _ in range(height)]
         # значения по умолчанию
         self.left = 10
         self.top = 10
@@ -38,10 +38,8 @@ class Board:
         y = self.top
         for i in range(self.height):
             for j in range(self.width):
-                if not self.board[i][j]:
-                    pygame.draw.rect(screen, 'white', (x, y, self.cell_size, self.cell_size), 1)
-                else:
-                    pygame.draw.rect(screen, 'white', (x, y, self.cell_size, self.cell_size))
+                pygame.draw.rect(screen, self.board[i][j], (x, y, self.cell_size, self.cell_size))
+                pygame.draw.rect(screen, 'white', (x, y, self.cell_size, self.cell_size), 1)
                 x += self.cell_size
             x = self.left
             y += self.cell_size
@@ -50,18 +48,20 @@ class Board:
         x, y = (mouse_pos[0] - self.left) // self.cell_size, (mouse_pos[1] - self.top) // self.cell_size
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             return -1
-        self.board[y][x] = not self.board[y][x]
-        for i in range(self.width):
-            self.board[y][i] = not self.board[y][i]
-        for i in range(self.height):
-            self.board[i][x] = not self.board[i][x]
+        return x, y
 
     def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
         self.on_click(cell)
 
     def on_click(self, cell_coords):
-        pass
+        x, y = cell_coords
+        if self.board[y][x] == 'black':
+            self.board[y][x] = 'red'
+        elif self.board[y][x] == 'red':
+            self.board[y][x] = 'blue'
+        elif self.board[y][x] == 'blue':
+            self.board[y][x] = 'black'
 
 
 if __name__ == '__main__':
@@ -78,7 +78,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                board.get_cell(event.pos)
+                board.get_click(event.pos)
         screen.fill((0, 0, 0))
         board.render(screen)
         pygame.display.flip()
