@@ -1,6 +1,5 @@
 import pygame
 
-
 '''
 class Cell:
     def __init__(self, coord, size, color=False):
@@ -21,7 +20,8 @@ class Board:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.board = [['black'] * width for _ in range(height)]
+        self.board = [[0] * width for _ in range(height)]
+        self.flag = True
         # значения по умолчанию
         self.left = 10
         self.top = 10
@@ -38,14 +38,23 @@ class Board:
         y = self.top
         for i in range(self.height):
             for j in range(self.width):
-                pygame.draw.rect(screen, self.board[i][j], (x, y, self.cell_size, self.cell_size))
+                if self.board[i][j] == 2:
+                    pygame.draw.line(screen, 'red', (x, y), (x + self.cell_size, y + self.cell_size),
+                                     3)
+                    pygame.draw.line(screen, 'red', (x + self.cell_size, y), (x, y + self.cell_size),
+                                     3)
+                elif self.board[i][j] == 1:
+                    pygame.draw.circle(screen, 'blue',
+                                       (x + self.cell_size // 2, y + self.cell_size // 2),
+                                       self.cell_size // 2, 3)
                 pygame.draw.rect(screen, 'white', (x, y, self.cell_size, self.cell_size), 1)
                 x += self.cell_size
             x = self.left
             y += self.cell_size
 
     def get_cell(self, mouse_pos):
-        x, y = (mouse_pos[0] - self.left) // self.cell_size, (mouse_pos[1] - self.top) // self.cell_size
+        x, y = (mouse_pos[0] - self.left) // self.cell_size, (
+                mouse_pos[1] - self.top) // self.cell_size
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             return -1
         return x, y
@@ -55,13 +64,11 @@ class Board:
         self.on_click(cell)
 
     def on_click(self, cell_coords):
-        x, y = cell_coords
-        if self.board[y][x] == 'black':
-            self.board[y][x] = 'red'
-        elif self.board[y][x] == 'red':
-            self.board[y][x] = 'blue'
-        elif self.board[y][x] == 'blue':
-            self.board[y][x] = 'black'
+        if cell_coords != -1:
+            x, y = cell_coords
+            if self.board[y][x] == 0:
+                self.board[y][x] = self.flag + 1
+            self.flag = not self.flag
 
 
 if __name__ == '__main__':
