@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 '''
 class Cell:
@@ -20,7 +21,7 @@ class Board:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.board = [[0] * width for _ in range(height)]
+        self.board = [[randint(1, 2) for __ in range(width)] for _ in range(height)]
         self.flag = True
         # значения по умолчанию
         self.left = 10
@@ -39,14 +40,13 @@ class Board:
         for i in range(self.height):
             for j in range(self.width):
                 if self.board[i][j] == 2:
-                    pygame.draw.line(screen, 'red', (x, y), (x + self.cell_size, y + self.cell_size),
-                                     3)
-                    pygame.draw.line(screen, 'red', (x + self.cell_size, y), (x, y + self.cell_size),
-                                     3)
+                    pygame.draw.circle(screen, 'red',
+                                       (x + self.cell_size // 2, y + self.cell_size // 2),
+                                       self.cell_size // 2)
                 elif self.board[i][j] == 1:
                     pygame.draw.circle(screen, 'blue',
                                        (x + self.cell_size // 2, y + self.cell_size // 2),
-                                       self.cell_size // 2, 3)
+                                       self.cell_size // 2)
                 pygame.draw.rect(screen, 'white', (x, y, self.cell_size, self.cell_size), 1)
                 x += self.cell_size
             x = self.left
@@ -66,18 +66,21 @@ class Board:
     def on_click(self, cell_coords):
         if cell_coords != -1:
             x, y = cell_coords
-            if self.board[y][x] == 0:
-                self.board[y][x] = self.flag + 1
-            self.flag = not self.flag
+            if self.board[y][x] == self.flag + 1:
+                for i in range(self.width):
+                    self.board[y][i] = self.flag + 1
+                for i in range(self.width):
+                    self.board[i][x] = self.flag + 1
+                self.flag = not self.flag
 
 
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Решение')
-    size = width, height = 501, 501
+    size = width, height = 600, 600
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
-    board = Board(7, 7)
+    board = Board(4, 4)
     board.set_view(10, 10, 50)
     running = True
     while running:
