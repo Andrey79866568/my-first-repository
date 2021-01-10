@@ -1,6 +1,7 @@
 import os
 import sys
 import pygame
+from random import randint
 
 
 def load_image(name, colorkey=None):
@@ -20,31 +21,37 @@ def load_image(name, colorkey=None):
     return image
 
 
-class Car(pygame.sprite.Sprite):
-    def __init__(self, picture, x, y, *group, colorkey=None):
+class Bomb(pygame.sprite.Sprite):
+    def __init__(self, *group, colorkey=None):
         super().__init__(*group)
         self.speed = 2
-        self.image = load_image(picture, colorkey)
+        self.image = load_image('bomb.png', colorkey)
+        self.bang = load_image('bombbym.png', colorkey)
+        w, h = self.bang.get_size()
+        x = randint((self.bang.get_width() - self.image.get_width()) // 2, 500 - w)
+        y = randint((self.bang.get_height() - self.image.get_height()) // 2, 500 - h)
         self.rect = pygame.rect.Rect(x, y, *self.image.get_size())
 
-    def update(self):
-        self.rect.x += self.speed
-        if self.rect.x >= width - 150:
-            self.speed = -2
-            self.image = pygame.transform.flip(self.image, True, False)
-        elif self.rect.x <= 0:
-            self.speed = 2
-            self.image = pygame.transform.flip(self.image, True, False)
+    def in_bbomb(self, x, y):
+        return self.rect.x < x < self.rect.x + self.rect.w and \
+               self.rect.y < y < self.rect.y + self.rect.h
+
+    def update(self, x, y):
+        if self.in_bbomb(x, y) and self.image != self.bang:
+            self.rect.x -= (self.bang.get_width() - self.rect.w) // 2
+            self.rect.y -= (self.bang.get_height() - self.rect.h) // 2
+            self.image = self.bang
 
 
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Решение')
-    size = width, height = 500, 100
+    size = width, height = 500, 500
     screen = pygame.display.set_mode(size)
-    screen.fill((255, 255, 255))
+    screen.fill((0, 0, 0))
     all_sprite = pygame.sprite.Group()
-    car = Car('car.png', 0, 0, all_sprite)
+    for i in range(20):
+        Bomb(all_sprite)
     fps = 60
     clock = pygame.time.Clock()
     running = True
@@ -52,9 +59,11 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    all_sprite.update(*event.pos)
         all_sprite.draw(screen)
-        all_sprite.update()
         clock.tick(fps)
         pygame.display.flip()
-        screen.fill((255, 255, 255))
+        screen.fill((0, 0, 0))
     pygame.quit()
