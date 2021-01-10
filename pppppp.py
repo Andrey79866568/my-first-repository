@@ -20,38 +20,41 @@ def load_image(name, colorkey=None):
     return image
 
 
-class Monster:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.image = load_image('monster1.png')
+class Car(pygame.sprite.Sprite):
+    def __init__(self, picture, x, y, *group, colorkey=None):
+        super().__init__(*group)
+        self.speed = 2
+        self.image = load_image(picture, colorkey)
+        self.rect = pygame.rect.Rect(x, y, *self.image.get_size())
 
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+    def update(self):
+        self.rect.x += self.speed
+        if self.rect.x >= width - 150:
+            self.speed = -2
+            self.image = pygame.transform.flip(self.image, True, False)
+        elif self.rect.x <= 0:
+            self.speed = 2
+            self.image = pygame.transform.flip(self.image, True, False)
 
 
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Решение')
-    size = width, height = 300, 300
+    size = width, height = 500, 100
     screen = pygame.display.set_mode(size)
     screen.fill((255, 255, 255))
-    mon = Monster()
+    all_sprite = pygame.sprite.Group()
+    car = Car('car.png', 0, 0, all_sprite)
+    fps = 60
+    clock = pygame.time.Clock()
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == 1073741904:
-                    mon.x -= 10
-                elif event.key == 1073741903:
-                    mon.x += 10
-                elif event.key == 1073741906:
-                    mon.y -= 10
-                elif event.key == 1073741905:
-                    mon.y += 10
-        mon.draw(screen)
+        all_sprite.draw(screen)
+        all_sprite.update()
+        clock.tick(fps)
         pygame.display.flip()
         screen.fill((255, 255, 255))
     pygame.quit()
