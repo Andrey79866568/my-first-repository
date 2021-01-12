@@ -6,7 +6,10 @@ from random import randint
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
-    assert os.path.isfile(fullname)
+    # если файл не существует, то выходим
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
     image = pygame.image.load(fullname)
     if colorkey is not None:
         image = image.convert()
@@ -18,43 +21,50 @@ def load_image(name, colorkey=None):
     return image
 
 
-class Mountain(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__(all_sprites)
-        self.image = pygame.transform.scale(load_image("горы.png", colorkey='#ffffff'), (600, 300))
-        self.rect = self.image.get_rect()
-        # вычисляем маску для эффективного сравнения
-        self.mask = pygame.mask.from_surface(self.image)
-        # располагаем горы внизу
-        self.rect.bottom = height
+class Bomb(pygame.sprite.Sprite):
+    def __init__(self, *group, colorkey=None):
+        super().__init__(*group)
+        self.speed = 2
+        self.image = load_image('bomb.png', colorkey)
+        self.bang = load_image('bombbym.png', colorkey)
+        w, h = self.bang.get_size()
+        x = randint((self.bang.get_width() - self.image.get_width()) // 2, 700 - w)
+        y = randint((self.bang.get_height() - self.image.get_height()) // 2, 700 - h)
+        self.rect = pygame.rect.Rect(x, y, *self.image.get_size())
+        # fg
 
+    def trueshnost(self, group):
+        if len(pygame.sprite.spritecollide(self, group, False)) > 1:
+            return True
+        else:
+            return False
 
-class Landing(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__(all_sprites)
-        self.image = pygame.transform.scale(load_image("парашют.png", colorkey='#ffffff'), (100, 100))
-        self.rect = self.image.get_rect()
-        # вычисляем маску для эффективного сравнения
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect.x = pos[0]
-        self.rect.y = pos[1]
+    def in_bbomb(self, x, y):
+        return self.rect.x < x < self.rect.x + self.rect.w and \
+               self.rect.y < y < self.rect.y + self.rect.h
 
-    def update(self):
-        if not pygame.sprite.collide_mask(self, mountain):
-            self.rect = self.rect.move(0, 1)
+    def update(self, x, y):
+        if self.in_bbomb(x, y) and self.image != self.bang:
+            self.rect.x -= (self.bang.get_width() - self.rect.w) // 2
+            self.rect.y -= (self.bang.get_height() - self.rect.h) // 2
+            self.image = self.bang
 
 
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Решение')
-    size = width, height = 600, 600
+    size = width, height = 700, 700
     screen = pygame.display.set_mode(size)
-    screen.fill('#ffffff')
-
-    all_sprites = pygame.sprite.Group()
-
-    mountain = Mountain()
-    fps = 500
+    screen.fill((0, 0, 0))
+    all_sprite = pygame.sprite.Group()
+    n = 0
+    while n != 20:
+        b = Bomb(all_sprite)
+        if b.trueshnost(all_sprite):
+            all_sprite.remove(b)
+        else:
+            n += 1
+    fps = 60
     clock = pygame.time.Clock()
     running = True
     while running:
@@ -62,10 +72,10 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                Landing(event.pos)
-        all_sprites.update()
-        all_sprites.draw(screen)
+                if event.button == 1:
+                    all_sprite.update(*event.pos)
+        all_sprite.draw(screen)
         clock.tick(fps)
         pygame.display.flip()
-        screen.fill('#ffffff')
+        screen.fill((0, 0, 0))
     pygame.quit()
