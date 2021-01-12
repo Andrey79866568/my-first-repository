@@ -42,6 +42,14 @@ class Log(pygame.sprite.Sprite):
         self.rect = pygame.Rect(pos[0], pos[1], 50, 10)
 
 
+class UpLog(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__(all_sprites, log_sprites, up_log_sprites)
+        self.image = pygame.Surface([10, 50])
+        self.image.fill('red')
+        self.rect = pygame.Rect(pos[0], pos[1], 10, 50)
+
+
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Решение')
@@ -50,21 +58,34 @@ if __name__ == '__main__':
     screen.fill((0, 0, 0))
     all_sprites = pygame.sprite.Group()
     log_sprites = pygame.sprite.Group()
+    up_log_sprites = pygame.sprite.Group()
     fps = 60
     clock = pygame.time.Clock()
     running = True
+    ctrl_flag = False
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LCTRL or event.key == pygame.K_RCTRL:
+                    ctrl_flag = True
                 try:
                     if event.key == pygame.K_LEFT:
                         pers.rect.x -= 10
                     elif event.key == pygame.K_RIGHT:
                         pers.rect.x += 10
+                    elif event.key == pygame.K_UP:
+                        if pygame.sprite.spritecollideany(pers, up_log_sprites):
+                            pers.rect.y -= 10
+                    elif event.key == pygame.K_DOWN:
+                        if pygame.sprite.spritecollideany(pers, up_log_sprites):
+                            pers.rect.y += 10
                 except NameError:
                     pass
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LCTRL or event.key == pygame.K_RCTRL:
+                    ctrl_flag = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     try:
@@ -72,7 +93,10 @@ if __name__ == '__main__':
                     except NameError:
                         pers = Pers(event.pos)
                 elif event.button == 3:
-                    Log(event.pos)
+                    if ctrl_flag:
+                        UpLog(event.pos)
+                    else:
+                        Log(event.pos)
         all_sprites.update(clock.tick(fps))
         all_sprites.draw(screen)
         pygame.display.flip()
