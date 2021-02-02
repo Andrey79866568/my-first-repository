@@ -1,11 +1,29 @@
 #!C:\Users\ovsia\PycharmProjects\andreysrepo\venv\Scripts\python.exe
-
 import sys
+import argparse
 
-dict_of_values = {i.split('=')[0]: i.split('=')[1] for i in sys.argv[1:] if i != '--sort'}
-if '--sort' in sys.argv:
-    dict_of_values = sorted(dict_of_values.items())
-else:
-    dict_of_values = dict_of_values.items()
-for key, elem in dict_of_values:
-    print(f'Key: {key} Value: {elem}')
+parser = argparse.ArgumentParser()
+parser.add_argument('--barbie', type=int, default=50)
+parser.add_argument('--cars', type=int, default=50)
+parser.add_argument('--movie', choices=['melodrama', 'football', 'other'], default='other')
+args = parser.parse_args()
+movie = 50
+barbie = args.barbie
+cars = args.cars
+if args.movie == 'melodrama':
+    movie = 0
+elif args.movie == 'football':
+    movie = 100
+if barbie > 100:
+    barbie = 100
+elif barbie < 0:
+    barbie = 0
+if cars > 100:
+    cars = 100
+elif cars < 0:
+    cars = 0
+
+boy = round((100 - barbie + cars + movie) / 3)
+girl = 100 - boy
+print(f'boy: {boy}')
+print(f'girl: {girl}')
