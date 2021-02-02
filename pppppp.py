@@ -2,28 +2,24 @@
 import sys
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--barbie', type=int, default=50)
-parser.add_argument('--cars', type=int, default=50)
-parser.add_argument('--movie', choices=['melodrama', 'football', 'other'], default='other')
-args = parser.parse_args()
-movie = 50
-barbie = args.barbie
-cars = args.cars
-if args.movie == 'melodrama':
-    movie = 0
-elif args.movie == 'football':
-    movie = 100
-if barbie > 100:
-    barbie = 100
-elif barbie < 0:
-    barbie = 0
-if cars > 100:
-    cars = 100
-elif cars < 0:
-    cars = 0
 
-boy = round((100 - barbie + cars + movie) / 3)
-girl = 100 - boy
-print(f'boy: {boy}')
-print(f'girl: {girl}')
+parser = argparse.ArgumentParser()
+parser.add_argument('file_from')
+parser.add_argument('file_to')
+parser.add_argument('--upper', action='store_true', default=False, dest='up_text')
+parser.add_argument('--lines', type=int, default=-1)
+args = parser.parse_args()
+try:
+    with open(args.file_from, 'r') as file_from:
+        lines = file_from.readlines()
+        n = args.lines
+        if n == -1 or n > len(lines):
+            n = len(lines)
+        with open(args.file_to, 'w') as file_to:
+            for i in range(n):
+                if args.up_text:
+                    file_to.write(''.join([j.upper() for j in lines[i]]))
+                else:
+                    file_to.write(lines[i])
+except FileNotFoundError:
+    print('error')
