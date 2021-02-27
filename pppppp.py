@@ -1,101 +1,112 @@
-from flask import Flask, url_for
-import os
+import pygame
+from copy import deepcopy
 
-app = Flask(__name__)
-list_ik = ['Человечество вырастает из детства.', 'Человечеству мала одна планета.',
-           'Мы сделаем обитаемыми безжизненные пока планеты.', 'И начнем с Марса!', 'Присоединяйся!']
+screen = pygame.display.set_mode((850, 850))
 
 
-@app.route('/')
-def start():
-    return "Миссия Колонизация Марса"
+class Board:
+    # создание поля
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.board = [[0] * width for _ in range(height)]
+        # значения по умолчанию
+        self.left = 10
+        self.top = 10
+        self.cell_size = 20
+
+    # настройка внешнего вида
+    def set_view(self, left, top, cell_size):
+        self.left = left
+        self.top = top
+        self.cell_size = cell_size
+
+    def render(self):
+        screen.fill((0, 0, 0))
+        for i in range(self.height):
+            for j in range(self.width):
+                if self.board[i][j] == 1:
+                    pygame.draw.rect(screen, (0, 255, 0),
+                                     (self.left + j * self.cell_size, self.top + i * self.cell_size,
+                                      self.cell_size, self.cell_size))
+                pygame.draw.rect(screen, (255, 255, 255),
+                                 (self.left + j * self.cell_size, self.top + i * self.cell_size,
+                                  self.cell_size, self.cell_size), 1)
+
+    def get_click(self, mouse_pos):
+        self.on_click(self.get_cell(mouse_pos))
+
+    def get_cell(self, mouse_pos):
+        x = mouse_pos[0]
+        y = mouse_pos[1]
+        if x - self.left <= 0 or y - self.top <= 0 \
+                or x - self.left >= self.width * self.cell_size\
+                or y - self.top >= self.height * self.cell_size:
+            return None
+        return (y - self.top) // self.cell_size, (x - self.left) // self.cell_size
+
+    def on_click(self, cell):
+        if cell is not None:
+            row = cell[0]
+            col = cell[1]
+            self.board[row][col] = 1
+            self.render()
 
 
-@app.route('/index')
-def deviz():
-    return 'И на Марсе будут яблони цвести!'
+class Life(Board):
+    def __init__(self, width, height):
+        super().__init__(width, height)
+
+    def next_move(self):
+        board1 = deepcopy(self.board)
+        for row in range(self.height):
+            for col in range(self.width):
+                count = 0
+                for i in range(3):
+                    for j in range(3):
+                        if i == 1 and j == 1:
+                            continue
+                        if self.board[(row + i - 1) % self.height][(col + j - 1) % self.width] == 1:
+                            count += 1
+                if self.board[row][col] == 1 and count not in {2, 3}:
+                    board1[row][col] = 0
+                elif self.board[row][col] == 0 and count == 3:
+                    board1[row][col] = 1
+        self.board = board1
+        self.render()
 
 
-@app.route('/promotion')
-def promotion():
-    return '</br>'.join(list_ik)
+board = Life(40, 40)
+processing = False
+fps = 4
+time = 0
+clock = pygame.time.Clock()
+board.render()
+running = True
+while running:
+    time += clock.tick()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif (
+                event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_LEFT or
+                event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]
+        ) and not processing:
+            board.get_click(event.pos)
+        elif (
+                event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE or
+                event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_RIGHT
+        ):
+            processing = ~processing
 
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == pygame.BUTTON_WHEELUP:
+                fps *= 1.5
+            elif event.button == pygame.BUTTON_WHEELDOWN:
+                fps /= 1.5
 
-@app.route('/image_sample')
-def image():
-    return f'''<!doctype html>
-                <html lang="en">
-                    <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-                    <link rel="stylesheet" 
-                    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
-                    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
-                    crossorigin="anonymous">
-                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
-                    <title>Привет, Яндекс!</title>
-                  </head>
-                  <body>
-                    <h1>Жди нас, Марс</h1>
-                    <img src="{url_for('static', filename='images/Mars.jpg')}" 
-                    alt="здесь должна была быть картинка, но не нашлась">
-                    <div class="alert alert-danger" role="alert">
-                        {list_ik[0]}
-                    </div>
-                    <div class="alert alert-warning" role="alert">
-                        {list_ik[1]}
-                    </div>
-                    <div class="alert alert-success" role="alert">
-                        {list_ik[2]}
-                    </div>
-                    <div class="alert alert-info" role="alert">
-                        {list_ik[3]}
-                    </div>
-                    <div class="alert alert-primary" role="alert">
-                        {list_ik[4]}
-                    </div>
-                  </body>
-                </html>
-                    '''
+    if processing and time >= 1000 / fps:
+        board.next_move()
+        time = 0
 
-
-@app.route('/tren')
-def tren():
-    return f"""<!doctype html>
-                <html lang="en">
-                  <head>
-                    <meta charset="utf-8">
-                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
-                    <title>Привет, Яндекс!</title>
-                  </head>
-                  <body>
-                    <h1>Первая HTML-страница</h1>
-                  </body>
-                </html>"""
-
-
-@app.route('/bootstrap_sample')
-def bootstrap():
-    return f'''<!doctype html>
-                <html lang="en">
-                  <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-                    <link rel="stylesheet" 
-                    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
-                    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
-                    crossorigin="anonymous">
-                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
-                    <title>Привет, Яндекс!</title>
-                  </head>
-                  <body>
-                    <h1>Привет, Яндекс!</h1>
-                    <div class="alert alert-warning" role="alert">
-                      А мы тут компонентами Bootstrap балуемся
-                    </div>
-                  </body>
-                </html>'''
-
-
-if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
+    pygame.display.flip()
