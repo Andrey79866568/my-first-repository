@@ -4,6 +4,14 @@ import json
 app = Flask(__name__)
 
 
+@app.route('/training/<prof>')
+def training(prof):
+    params = dict()
+    params['name'] = prof
+    params['title'] = 'Заготовка'
+    return render_template('tren.html', **params)
+
+
 @app.route('/')
 @app.route('/index')
 def index():

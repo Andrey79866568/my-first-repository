@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+    {% if 'инженер' in name or 'строитель' in name %}
+    <h2 align="center" style="color:#000000">Инженерные тренажеры</h2>
+    <img align="center" src='/static/images/%D0%98%D0%A1.jpg' alt="looooool">
+    {% else %}
+    <h2 align="center" style="color:#000000">Научные симуляторы</h2>
+    <img align="center" src='/static/images/%D0%9D%D0%A1.jpg' alt = 'loooooool'>
+    {% endif %}
 {% endblock %}
