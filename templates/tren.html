@@ -1,11 +1,18 @@
-{% extends "base.html" %}
+{% extends "base_nav.html" %}
 
 {% block content %}
     {% if 'инженер' in name or 'строитель' in name %}
-    <h2 align="center" style="color:#000000">Инженерные тренажеры</h2>
-    <img align="center" src='/static/images/%D0%98%D0%A1.jpg' alt="looooool">
+        <h2 align="center" style="color:#000000">Инженерные тренажеры</h2>
+        <div align="center">
+            <img align="center" src='/static/images/%D0%98%D0%A1.jpg' alt="looooool">
+        </div>
+    {% elif name == 'anonymous' %}
+        <h2 align="center" style="color:#000000">Напишите вашу профессию,</h2>
+        <h2 align="center" style="color:#000000">пожалуйста!</h2>
     {% else %}
-    <h2 align="center" style="color:#000000">Научные симуляторы</h2>
-    <img align="center" src='/static/images/%D0%9D%D0%A1.jpg' alt = 'loooooool'>
+        <h2 align="center" style="color:#000000">Научные симуляторы</h2>
+        <div align="center">
+            <img align="center" src='/static/images/%D0%9D%D0%A1.jpg' alt = 'loooooool'>
+        </div>>
     {% endif %}
 {% endblock %}

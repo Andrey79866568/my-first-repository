@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <title>{{title}}</title>
+</head>
+  <body>
+    <!-- Begin page content -->
+    <main role="main" class="container">
+
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+
+            <li class="page-item"><a class="page-link" href="/index">1</a></li>
+            <li class="page-item"><a class="page-link" href="/training/anonymous">2</a></li>
+            <li class="page-item active">
+                <a class="page-link" href="/list_prof/ol">this <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">5</a></li>
+            <li class="page-item"><a class="page-link" href="#">6</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+
+        <h1 align="center" style="color:#000000">Миссия Колонизации Марса</h1>
+        <h4 align="center" style="color:#cccccc">И на Марсе бдут яблони цвести</h4>
+        {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
