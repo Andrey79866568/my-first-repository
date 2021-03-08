@@ -75,12 +75,23 @@ def answer():
 
 @app.route('/alert')
 def alert():
-    params_alert = params.copy()
-    params_alert['style'] = '/static/css/alert_style.css'
-    form = AlertForm()
-    if form.validate_on_submit():
-        return redirect('/success')
-    return render_template('alert.html', form=form, **params_alert)
+    if request.method == 'GET':
+        params_alert = params.copy()
+        params_alert['style'] = '/static/css/alert_style.css'
+        form = AlertForm()
+        if form.validate_on_submit():
+            return redirect('/success')
+        return render_template('alert.html', form=form, **params_alert)
+    elif request.method == 'POST':
+        print(request.form)
+        return 'Тревога успешно объявлена'
+
+
+@app.route('/distribution')
+def distribution():
+    list_rasp = ['Какой-то член экипажа', 'Какой-то член экипажа 1', 'Какой-то член экипажа 2',
+                 'Какой-то член экипажа 3', 'Какой-то член экипажа 4']
+    return render_template('distribution.html', list_rasp=list_rasp, **params)
 
 
 if __name__ == '__main__':

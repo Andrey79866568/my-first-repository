@@ -28,7 +28,7 @@ h4 {
 	src: local(KaifShr),
 	    url(fonts/KaifShr.otf);
 }
-ul, ol {
+ul, ol, h2, h6 {
     font-family: KaifShr, serif;
     font-size: 120%
 }

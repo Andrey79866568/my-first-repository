@@ -1,0 +1,13 @@
+{% extends "base_nav.html" %}
+
+{% block content %}
+    {% set form = 'Каюта №' %}
+    <h2>Размещение по каютам</h2>
+    {% for i in list_rasp %}
+        {% if loop.first %}
+            <h6 align="center">{{ i }}-{{ form }} {{ loop.index }} - капитан</h6>
+        {% else %}
+            <h6 align="center">{{ i }}-{{ form }} {{ loop.index }}</h6>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
