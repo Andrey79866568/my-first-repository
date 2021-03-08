@@ -7,6 +7,7 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}"/>
     <title>{{title}}</title>
 </head>
   <body>
@@ -18,22 +19,22 @@
 
             <li class="page-item">
               <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
+                <span aria-hidden="true"><<</span>
                 <span class="sr-only">Previous</span>
               </a>
             </li>
 
             <li class="page-item"><a class="page-link" href="/index">1</a></li>
             <li class="page-item"><a class="page-link" href="/training/anonymous">2</a></li>
+            <li class="page-item"><a class="page-link" href="/list_prof/ol">3</a></li>
             <li class="page-item active">
-                <a class="page-link" href="/list_prof/ol">this <span class="sr-only">(current)</span></a>
+                <a class="page-link" href="/answer">this <span class="sr-only">(current)</span></a>
             </li>
-            <li class="page-item"><a class="page-link" href="#">4</a></li>
             <li class="page-item"><a class="page-link" href="#">5</a></li>
             <li class="page-item"><a class="page-link" href="#">6</a></li>
             <li class="page-item">
               <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
+                <span aria-hidden="true">>></span>
                 <span class="sr-only">Next</span>
               </a>
             </li>
@@ -41,8 +42,8 @@
           </ul>
         </nav>
 
-        <h1 align="center" style="color:#000000">Миссия Колонизации Марса</h1>
-        <h4 align="center" style="color:#cccccc">И на Марсе бдут яблони цвести</h4>
+        <h1 align="center" style="color:#000">Mars Colonization Mission</h1>
+        <h4 align="center" style="color:#ff6bfd">And apple trees will bloom on Mars</h4>
         {% block content %}{% endblock %}
     </main>
   </body>
