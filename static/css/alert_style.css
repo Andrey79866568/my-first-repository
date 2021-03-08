@@ -1,0 +1,39 @@
+body {
+    background: #ff0000;
+}
+
+@font-face {
+	font-family: danger;
+	src: local(danger),
+	    url(fonts/danger.ttf);
+}
+h1 {
+    font-family: danger, serif;
+}
+
+@font-face {
+	font-family: danger;
+	src: local(danger),
+	    url(fonts/danger.ttf);
+}
+h4 {
+    font-family: danger, serif;
+    font-size: 100%;
+}
+
+@font-face {
+	font-family: danger;
+	src: local(danger),
+	    url(fonts/danger.ttf);
+}
+
+@font-face {
+	font-family: KaifShr;
+	src: local(KaifShr),
+	    url(fonts/KaifShr.otf);
+}
+ul, ol {
+    font-family: KaifShr, serif;
+    font-size: 120%
+}
+

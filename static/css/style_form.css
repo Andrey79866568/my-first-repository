@@ -1,0 +1,33 @@
+@font-face {
+	font-family: KaifShr;
+	src: local(KaifShr),
+	    url(fonts/KaifShr.otf);
+}
+h1 {
+    font-family: KaifShr, serif;
+}
+
+@font-face {
+	font-family: KaifShr;
+	src: local(KaifShr),
+	    url(fonts/KaifShr.otf);
+}
+h4 {
+    font-family: KaifShr, serif;
+    font-size: 200%;
+}
+
+@font-face {
+	font-family: KaifShr;
+	src: local(KaifShr),
+	    url(fonts/KaifShr.otf);
+}
+label {
+    font-family: KaifShr, serif;
+}
+
+form {
+    border: 10px dashed #ffaa00;
+    background: #00ff00;
+    border-radius: 10px
+}
