@@ -9,6 +9,8 @@ app.config['SECRET_KEY'] = '#Mars$%Colonisation$%Secret$%Key!!!'
 params = dict()
 params['title'] = 'Our Mission'
 params['profession'] = 'anonymous'
+params['sex'] = 'male'
+params['oldest'] = 20
 params['style'] = '/static/css/style.css'
 params_answer = dict()
 params_answer['style'] = '/static/css/style.css'
@@ -32,8 +34,9 @@ def login_astr():
         params_answer['name'] = request.form['name']
         params_answer['education'] = request.form['class']
         params_answer['profession'] = request.form['profs']
-        params_answer['sex'] = request.form['sex']
+        params_answer['sex'] = params['sex'] = request.form['sex']
         params_answer['motivation'] = request.form['about']
+        params_answer['oldest'] = params['oldest'] = request.form['oldest']
         if 'accept_to_stay' in request.form:
             params_answer['ready'] = request.form['accept_to_stay']
         else:
@@ -50,8 +53,7 @@ def index():
 
 @app.route('/training/<prof>')
 def training(prof):
-    params['name_prof'] = prof
-    return render_template('tren.html', **params)
+    return render_template('tren.html', name_prof=prof, **params)
 
 
 @app.route('/list_prof/<type_of_list>')
@@ -92,6 +94,13 @@ def distribution():
     list_rasp = ['Какой-то член экипажа', 'Какой-то член экипажа 1', 'Какой-то член экипажа 2',
                  'Какой-то член экипажа 3', 'Какой-то член экипажа 4']
     return render_template('distribution.html', list_rasp=list_rasp, **params)
+
+
+@app.route('/table/<sex>/<oldest>')
+def design(sex, oldest):
+    params['sex'] = sex
+    params['oldest'] = oldest
+    return render_template('table.html', **params)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,25 @@
+{% extends "base_nav.html" %}
+
+{% block content %}
+    <h2>Оформление каюты</h2>
+    <table>
+        <tr>
+            <td>
+                <h6>Цвет стен</h6>
+            </td>
+            <td>
+                <h6>Эмблема</h6>
+            </td>
+        </tr>
+        <tr>
+            {% if sex == 'male' and oldest <= 21 %}
+                <td>
+                    <img src="{{ url_for('static', filename='images/Red.jpg') }}" alt = 'loooooool'>
+                </td>
+                <td>
+                    <img src="{{ url_for('static', filename='images/baby_yoda.jpg') }}" alt = 'loooooool'>
+                </td>
+            {% endif %}
+        </tr>
+    </table>
+{% endblock %}
