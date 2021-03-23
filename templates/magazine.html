@@ -1,0 +1,33 @@
+{% extends "base_nav.html" %}
+
+{% block content %}
+    <div>
+        <table class="table">
+            {% for work in works %}
+            <tr>
+                <h2>Action # {{ loop.index }}</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Title of activity</th>
+                            <th scope="col">Team leader</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col">List of collaborators</th>
+                            <th scope="col">Is finished</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{work.job}}</td>
+                            <td>{{work.team_leader}}</td>
+                            <td>{{work.work_size}}</td>
+                            <td>{{work.collaborators}}</td>
+                            <td>{{work.is_finished}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

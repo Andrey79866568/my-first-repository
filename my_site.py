@@ -2,6 +2,8 @@ from flask import Flask, url_for, request, render_template, redirect
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
+from sqlalch_data.data.db_session import *
+from sqlalch_data.data.__all_models import *
 import json
 
 app = Flask(__name__)
@@ -14,6 +16,9 @@ params['oldest'] = 20
 params['style'] = '/static/css/style.css'
 params_answer = dict()
 params_answer['style'] = '/static/css/style.css'
+
+global_init('sqlalch_data/db/mars.db')
+db_sess = create_session()
 
 
 class AlertForm(FlaskForm):
@@ -48,7 +53,7 @@ def login_astr():
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('base_nav.html', **params)
+    return render_template('magazine.html', works=db_sess.query(Jobs).order_by(Jobs.collaborators.asc()), **params)
 
 
 @app.route('/training/<prof>')
