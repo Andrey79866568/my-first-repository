@@ -29,6 +29,36 @@ class AlertForm(FlaskForm):
     submit = SubmitField('СТАРТ')
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def reqister():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if form.password.data != form.password_again.data:
+            return render_template('register_form.html',
+                                   form=form,
+                                   message="Пароли не совпадают", **params)
+        db_sess = create_session()
+        if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('register_form.html',
+                                   form=form,
+                                   message="Такой пользователь уже есть", **params)
+        user = User(
+            email=form.email.data,
+            surname=form.surname.data,
+            name=form.name.data,
+            age=form.age.data,
+            position=form.position.data,
+            speciality=form.speciality.data,
+            address=form.address.data,
+            hashed_password=generate_password_hash(form.password.data)
+        )
+        user.set_password(form.password.data)
+        db_sess.add(user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('register_form.html', form=form, **params)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login_astr():
     if request.method == 'GET':
