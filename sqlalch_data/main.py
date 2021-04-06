@@ -2,17 +2,21 @@
 # from data.db_session import *
 # from data.__all_models import *
 # import datetime
-# #
+
+
 # app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 name = input()
 global_init(name)
 db_sess = create_session()
+departament = db_sess.query(Department).filter(Department.id == 1).first()
+list_ik = [int(i) for i in departament.members.split(', ')]
+for i in list_ik:
+    user = db_sess.query(User).filter(User.id == i).first()
+    jobs = db_sess.query(Jobs).filter(Jobs.collaborators.like(f'%{user.id}%'))
+    if sum([job.work_size for job in jobs]) >= 25:
+        print(user.surname, user.name)
 
-users = db_sess.query(User).filter(User.address.like("module_1"), User.age < 21)
-for i in users:
-    i.address = "module_3"
-db_sess.commit()
-
+# db_sess.commit()
 # app.run()

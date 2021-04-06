@@ -1,0 +1,15 @@
+{% extends "base_nav.html" %}
+
+{% block content %}
+    <h1>Авторизация</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {% import 'macro_file.html' as field %}
+
+        {{ field.field(form.email,'email') }}
+        {{ field.field(form.password, type='password') }}
+        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        <div>{{ message }}</div>
+    </form>
+{% endblock %}

@@ -4,9 +4,24 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, TextAreaField, SubmitField
+from wtforms import PasswordField, StringField, TextAreaField, SubmitField, BooleanField
 from wtforms.fields.html5 import EmailField, IntegerField
 from wtforms.validators import DataRequired
+from flask_login import UserMixin
+
+
+class Jobs(SqlAlchemyBase):
+    __tablename__ = 'jobs'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    team_leader = sqlalchemy.Column(sqlalchemy.Integer,
+                                    sqlalchemy.ForeignKey("users.id"))
+    job = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    work_size = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    collaborators = sqlalchemy.Column(sqlalchemy.String)
+    start_date = sqlalchemy.Column(sqlalchemy.DateTime)
+    end_date = sqlalchemy.Column(sqlalchemy.DateTime)
+    is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
 
 class RegisterForm(FlaskForm):
@@ -22,7 +37,14 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
-class User(SqlAlchemyBase):
+class LoginForm(FlaskForm):
+    email = EmailField('Почта', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    remember_me = BooleanField('Запомнить меня')
+    submit = SubmitField('Войти')
+
+
+class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -37,6 +59,9 @@ class User(SqlAlchemyBase):
                               index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
+    departament_id = sqlalchemy.Column(sqlalchemy.Integer,
+                                       sqlalchemy.ForeignKey("departments.id"))
+    departament = orm.relation('Departament')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
@@ -48,15 +73,11 @@ class User(SqlAlchemyBase):
         return f"{self.id}"
 
 
-class Jobs(SqlAlchemyBase):
-    __tablename__ = 'jobs'
+class Departament(SqlAlchemyBase):
+    __tablename__ = 'departments'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    team_leader = sqlalchemy.Column(sqlalchemy.Integer,
-                                    sqlalchemy.ForeignKey("users.id"))
-    job = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    work_size = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    collaborators = sqlalchemy.Column(sqlalchemy.String)
-    start_date = sqlalchemy.Column(sqlalchemy.DateTime)
-    end_date = sqlalchemy.Column(sqlalchemy.DateTime)
-    is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    chief = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
+    members = orm.relation("User", back_populates='departament')
+    email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)

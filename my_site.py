@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired
 from sqlalch_data.data.db_session import *
 from sqlalch_data.data.__all_models import *
 import json
+from flask_login import LoginManager, login_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '#Mars$%Colonisation$%Secret$%Key!!!'
@@ -19,6 +20,28 @@ params_answer['style'] = '/static/css/style.css'
 
 global_init('sqlalch_data/db/mars.db')
 db_sess = create_session()
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db_sess.query(User).get(user_id)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/")
+        return render_template('login_for_avtor.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('login_for_avtor.html', title='Авторизация', form=form)
 
 
 class AlertForm(FlaskForm):
@@ -59,7 +82,7 @@ def reqister():
     return render_template('register_form.html', form=form, **params)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login_dfdf', methods=['GET', 'POST'])
 def login_astr():
     if request.method == 'GET':
         return render_template('login_astr.html')
@@ -83,7 +106,8 @@ def login_astr():
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('magazine.html', works=db_sess.query(Jobs).order_by(Jobs.collaborators.asc()), **params)
+    return render_template('magazine.html', works=db_sess.query(Jobs).order_by(Jobs.collaborators.asc()),
+                           **params)
 
 
 @app.route('/training/<prof>')
