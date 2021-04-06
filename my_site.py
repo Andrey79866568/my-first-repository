@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired
 from sqlalch_data.data.db_session import *
 from sqlalch_data.data.__all_models import *
 import json
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '#Mars$%Colonisation$%Secret$%Key!!!'
@@ -40,8 +40,26 @@ def login():
             return redirect("/")
         return render_template('login_for_avtor.html',
                                message="Неправильный логин или пароль",
-                               form=form)
-    return render_template('login_for_avtor.html', title='Авторизация', form=form)
+                               form=form, **params)
+    return render_template('login_for_avtor.html', form=form, **params)
+
+
+@app.route('/add_job',  methods=['GET', 'POST'])
+@login_required
+def add_job():
+    form = AddJob()
+    if form.validate_on_submit():
+        job = Jobs()
+        job.title = form.title.data
+        job.team_leader = form.team_leader.data
+        job.job = form.job.data
+        job.work_size = form.work_size.data
+        job.collaborators = form.collaborators.data
+        current_user.job.append(job)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('add_job_shab.html', form=form, **params)
 
 
 class AlertForm(FlaskForm):

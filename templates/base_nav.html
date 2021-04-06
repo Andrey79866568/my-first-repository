@@ -30,6 +30,16 @@
 
           </ul>
         </nav>
+
+        {% if current_user.is_authenticated %}
+            <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+        {% else %}
+        <p>
+            <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+            <a class="btn btn-success" href="/login">Войти</a>
+        </p>
+        {% endif %}
+
         <h1 align="center" style="color:#000">Mars Colonization Mission</h1>
         <h4 align="center" style="color:#ff6bfd">And apple trees will bloom on Mars</h4>
         <div align="center">

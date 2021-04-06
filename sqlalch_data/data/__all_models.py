@@ -10,6 +10,15 @@ from wtforms.validators import DataRequired
 from flask_login import UserMixin
 
 
+class AddJob(FlaskForm):
+    title = StringField('Заголовок', validators=[DataRequired()])
+    team_leader = IntegerField('Лидер команды')
+    job = TextAreaField("Содержание")
+    work_size = IntegerField("На сколько работа в часах")
+    collaborators = StringField("Поле для хранения id работников")
+    submit = SubmitField('Добавить')
+
+
 class Jobs(SqlAlchemyBase):
     __tablename__ = 'jobs'
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -17,9 +26,9 @@ class Jobs(SqlAlchemyBase):
     team_leader = sqlalchemy.Column(sqlalchemy.Integer,
                                     sqlalchemy.ForeignKey("users.id"))
     job = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    work_size = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    work_size = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     collaborators = sqlalchemy.Column(sqlalchemy.String)
-    start_date = sqlalchemy.Column(sqlalchemy.DateTime)
+    start_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     end_date = sqlalchemy.Column(sqlalchemy.DateTime)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
