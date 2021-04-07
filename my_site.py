@@ -58,7 +58,7 @@ def add_job():
     if form.validate_on_submit():
         job = Jobs()
         job.job = form.job.data
-        if form.team_leader.data == 'me':
+        if form.team_leader.data == -1:
             job.team_leader = current_user.id
         else:
             job.team_leader = form.team_leader.data
@@ -98,6 +98,18 @@ def edit_job(id):
         else:
             abort(404)
     return render_template('add_job_shab.html', form=form, **params)
+
+
+@app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def jobs_delete(id):
+    jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
+    if jobs:
+        db_sess.delete(jobs)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
 
 
 class AlertForm(FlaskForm):
