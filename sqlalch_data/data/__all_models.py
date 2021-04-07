@@ -89,3 +89,11 @@ class Departament(SqlAlchemyBase):
     chief = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
     members = orm.relation("User", back_populates='departament')
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
+
+
+class AddDepartament(FlaskForm):
+    title = StringField("Название департамента")
+    chief = IntegerField('Лидер')
+    members = TextAreaField("Тут надо записать через запятую id рабочих")
+    email = EmailField("Почта департамента")
+    submit = SubmitField('Сделать')

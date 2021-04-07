@@ -1,0 +1,45 @@
+{% extends "base_nav.html" %}
+
+{% block content %}
+<div>
+    <table class="table">
+        {% for depart in departs %}
+        <tr>
+            <h2>Action # {{ loop.index }}</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Title of depart</th>
+                    <th scope="col">Chief</th>
+                    <th scope="col">email</th>
+                    <th scope="col">Members</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{depart.title}}</td>
+                    <td>{{depart.chief}}</td>
+                    <td>{{depart.email}}</td>
+                    <td>{{depart.members}}</td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            {% if current_user.is_authenticated and (current_user.id == depart.chief or current_user.id == 1)
+            %}
+            <div>
+                <a href="/depart_edit/{{ depart.id }}" class="btn btn-warning">
+                    Изменить
+                </a>
+                <a href="/depart_delete/{{ depart.id }}" class="btn btn-danger">
+                    Удалить
+                </a>
+            </div>
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

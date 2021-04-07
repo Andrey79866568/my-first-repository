@@ -18,14 +18,9 @@
         <nav aria-label="Page navigation example">
           <ul class="pagination justify-content-center">
 
-            <li class="page-item"><a class="page-link" href="/index">start</a></li>
-            <li class="page-item"><a class="page-link" href="/training/{{ profession }}">tren</a></li>
-            <li class="page-item"><a class="page-link" href="/list_prof/ol">list</a></li>
-            <li class="page-item active">
-                <a class="page-link" href="/answer">answ<span class="sr-only">(current)</span></a>
-            </li>
+            <li class="page-item"><a class="page-link" href="/index">to jobs</a></li>
+            <li class="page-item"><a class="page-link" href="/departs">to_depart</a></li>
             <li class="page-item"><a class="page-link" href="/alert">alert</a></li>
-            <li class="page-item"><a class="page-link" href="/distribution">dist</a></li>
             <li class="page-item"><a class="page-link" href="/table/{{ sex }}/{{ oldest }}">desi</a></li>
 
           </ul>
@@ -33,7 +28,8 @@
 
         {% if current_user.is_authenticated %}
             <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
-            <a class="btn btn-dark" href="/add_job">Добавить новость</a>
+            <a class="btn btn-dark" href="/add_job">Добавить работу</a>
+            <a class="btn btn-dark" href="/add_depart">Добавить департамент</a>
         {% else %}
         <p>
             <a class="btn btn-primary " href="/register">Зарегистрироваться</a>

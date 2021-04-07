@@ -1,14 +1,14 @@
 {% extends "base_nav.html" %}
 
 {% block content %}
-    <h1>Form for job</h1>
+    <h1>Form for departament</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
         {% import 'macro_file.html' as field %}
-        {{ field.field(form.team_leader, type='integer') }}
-        {{ field.field(form.job) }}
-        {{ field.field(form.work_size, type='integer') }}
-        {{ field.field(form.collaborators) }}
+        {{ field.field(form.title) }}
+        {{ field.field(form.chief, type='integer') }}
+        {{ field.field(form.members) }}
+        {{ field.field(form.email, type='email') }}
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         <div>{{ message }}</div>
     </form>
