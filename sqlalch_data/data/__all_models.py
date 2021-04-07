@@ -11,12 +11,11 @@ from flask_login import UserMixin
 
 
 class AddJob(FlaskForm):
-    title = StringField('Заголовок', validators=[DataRequired()])
     team_leader = IntegerField('Лидер команды')
     job = TextAreaField("Содержание")
     work_size = IntegerField("На сколько работа в часах")
     collaborators = StringField("Поле для хранения id работников")
-    submit = SubmitField('Добавить')
+    submit = SubmitField('Сделать')
 
 
 class Jobs(SqlAlchemyBase):
@@ -43,7 +42,7 @@ class RegisterForm(FlaskForm):
     position = StringField('Позиция пользователя', validators=[DataRequired()])
     speciality = StringField('Специальность пользователя', validators=[DataRequired()])
     address = StringField('Адрес', validators=[DataRequired()])
-    submit = SubmitField('Войти')
+    submit = SubmitField('Зарегестрироваться')
 
 
 class LoginForm(FlaskForm):

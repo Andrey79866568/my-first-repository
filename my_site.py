@@ -1,11 +1,11 @@
-from flask import Flask, url_for, request, render_template, redirect
+from flask import Flask, url_for, request, render_template, redirect, abort
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from sqlalch_data.data.db_session import *
 from sqlalch_data.data.__all_models import *
 import json
-from flask_login import LoginManager, login_user, login_required, current_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '#Mars$%Colonisation$%Secret$%Key!!!'
@@ -44,21 +44,59 @@ def login():
     return render_template('login_for_avtor.html', form=form, **params)
 
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+
 @app.route('/add_job',  methods=['GET', 'POST'])
 @login_required
 def add_job():
     form = AddJob()
     if form.validate_on_submit():
         job = Jobs()
-        job.title = form.title.data
-        job.team_leader = form.team_leader.data
+        job.job = form.job.data
+        if form.team_leader.data == 'me':
+            job.team_leader = current_user.id
+        else:
+            job.team_leader = form.team_leader.data
         job.job = form.job.data
         job.work_size = form.work_size.data
         job.collaborators = form.collaborators.data
-        current_user.job.append(job)
-        db_sess.merge(current_user)
+        db_sess.merge(job)
         db_sess.commit()
         return redirect('/')
+    return render_template('add_job_shab.html', form=form, **params)
+
+
+@app.route('/jobs_edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_job(id):
+    form = AddJob()
+    if request.method == "GET":
+        jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
+        if jobs:
+            form.job.data = jobs.job
+            form.team_leader.data = jobs.team_leader
+            form.job.data = jobs.job
+            form.work_size.data = jobs.work_size
+            form.collaborators.data = jobs.collaborators
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
+        if jobs:
+            jobs.job = form.job.data
+            jobs.team_leader = form.team_leader.data
+            jobs.job = form.job.data
+            jobs.work_size = form.work_size.data
+            jobs.collaborators = form.collaborators.data
+            db_sess.commit()
+            return redirect('/')
+        else:
+            abort(404)
     return render_template('add_job_shab.html', form=form, **params)
 
 
