@@ -13,6 +13,7 @@
                     <th scope="col">Team leader</th>
                     <th scope="col">Duration</th>
                     <th scope="col">List of collaborators</th>
+                    <th scope="col">Hazard category</th>
                     <th scope="col">Is finished</th>
                 </tr>
                 </thead>
@@ -22,6 +23,7 @@
                     <td>{{work.team_leader}}</td>
                     <td>{{work.work_size}}</td>
                     <td>{{work.collaborators}}</td>
+                    <td>{{work.category.name}}</td>
                     <td>{{work.is_finished}}</td>
                 </tr>
                 </tbody>

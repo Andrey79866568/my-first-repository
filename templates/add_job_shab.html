@@ -9,6 +9,7 @@
         {{ field.field(form.job) }}
         {{ field.field(form.work_size, type='integer') }}
         {{ field.field(form.collaborators) }}
+        {{ field.field(form.category, type='integer') }}
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         <div>{{ message }}</div>
     </form>

@@ -10,11 +10,20 @@ from wtforms.validators import DataRequired
 from flask_login import UserMixin
 
 
+class Category(SqlAlchemyBase):
+    __tablename__ = 'categories'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    name = sqlalchemy.Column(sqlalchemy.String)
+    jobs = orm.relation("Jobs", back_populates='category')
+
+
 class AddJob(FlaskForm):
     team_leader = IntegerField('Лидер команды')
     job = TextAreaField("Содержание")
     work_size = IntegerField("На сколько работа в часах")
     collaborators = StringField("Поле для хранения id работников")
+    category = IntegerField("Category")
     submit = SubmitField('Сделать')
 
 
@@ -30,6 +39,9 @@ class Jobs(SqlAlchemyBase):
     start_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     end_date = sqlalchemy.Column(sqlalchemy.DateTime)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    category_id = sqlalchemy.Column(sqlalchemy.Integer,
+                                    sqlalchemy.ForeignKey("categories.id"))
+    category = orm.relation('Category')
 
 
 class RegisterForm(FlaskForm):

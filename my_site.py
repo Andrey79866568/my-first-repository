@@ -55,6 +55,13 @@ def add_job():
     form = AddJob()
     if form.validate_on_submit():
         job = Jobs()
+
+        category = db_sess.query(Category).filter(Category.id == form.category.data).first()
+        if category:
+            job.category = category
+        else:
+            abort(500)
+
         job.job = form.job.data
         if form.team_leader.data == -1:
             job.team_leader = current_user.id
