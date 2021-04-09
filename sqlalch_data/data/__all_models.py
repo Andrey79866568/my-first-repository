@@ -8,9 +8,10 @@ from wtforms import PasswordField, StringField, TextAreaField, SubmitField, Bool
 from wtforms.fields.html5 import EmailField, IntegerField
 from wtforms.validators import DataRequired
 from flask_login import UserMixin
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Category(SqlAlchemyBase):
+class Category(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'categories'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
@@ -27,7 +28,7 @@ class AddJob(FlaskForm):
     submit = SubmitField('Сделать')
 
 
-class Jobs(SqlAlchemyBase):
+class Jobs(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'jobs'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
@@ -64,7 +65,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
-class User(SqlAlchemyBase, UserMixin):
+class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'users'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -93,7 +94,7 @@ class User(SqlAlchemyBase, UserMixin):
         return f"{self.id}"
 
 
-class Departament(SqlAlchemyBase):
+class Departament(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'departments'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

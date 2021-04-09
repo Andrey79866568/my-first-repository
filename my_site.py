@@ -1,9 +1,10 @@
-from flask import Flask, url_for, request, render_template, redirect, abort
+from flask import Flask, make_response, url_for, jsonify, request, render_template, redirect, abort
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from sqlalch_data.data.db_session import *
 from sqlalch_data.data.__all_models import *
+import jobs_api
 import json
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 
@@ -16,11 +17,18 @@ params['sex'] = 'male'
 params['oldest'] = 20
 params['style'] = '/static/css/style.css'
 
+app.register_blueprint(jobs_api.blueprint)
+
 global_init('sqlalch_data/db/mars.db')
 db_sess = create_session()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @login_manager.user_loader
@@ -148,6 +156,7 @@ def edit_job(id):
             form.job.data = jobs.job
             form.work_size.data = jobs.work_size
             form.collaborators.data = jobs.collaborators
+            form.category.data = jobs.category.id
         else:
             abort(404)
     if form.validate_on_submit():
@@ -158,6 +167,11 @@ def edit_job(id):
             jobs.job = form.job.data
             jobs.work_size = form.work_size.data
             jobs.collaborators = form.collaborators.data
+            category = db_sess.query(Category).filter(Category.id == form.category.data).first()
+            if category:
+                jobs.category = category
+            else:
+                abort(500)
             db_sess.commit()
             return redirect('/')
         else:
