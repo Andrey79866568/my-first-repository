@@ -3,13 +3,14 @@ from requests import get, post, delete, put
 print(get('http://localhost:8080/api/jobs').json())
 
 
-print(put('http://localhost:8080/api/jobs').json())
+print(put('http://localhost:8080/api/jobs/3').json())
 
-print(put('http://localhost:8080/api/jobs/993').json())
+print(put('http://localhost:8080/api/jobs/993', json={'ss': 'adfds'}).json())
 
 print(put('http://localhost:8080/api/jobs/sdfssaaw').json())
 
-print(put('http://localhost:8080/api/jobs/6', json={'collaborators': 'all peoples'}).json())
+print(put('http://localhost:8080/api/jobs/6', json={'collaborators': 'all peoples',
+                                                    'category_id': 2}).json())
 
 '''
 print(delete('http://localhost:8080/api/jobs').json())

@@ -88,20 +88,23 @@ def put_jobs(jobs_id):
     elif not all(key in ['id', 'team_leader', 'job', 'work_size', 'collaborators',
                          'is_finished', 'category_id'] for key in request.json):
         return jsonify({'error': 'Bad request'})
-    print(1)
+
     db_sess = create_session()
-    job = db_sess.query(Jobs).get(request.json['id'])
+
+    job = db_sess.query(Jobs).filter(Jobs.id == jobs_id).first()
+    if not job:
+        return jsonify({'errors': 'There is no this id'})
 
     for key in request.json:
-        if key == 'category':
+        if key == 'category_id':
             category = db_sess.query(Category).filter(Category.id == request.json['category_id']).first()
             if category:
                 job.category = category
             else:
                 return jsonify({'errors': 'There is no this category'})
 
-        job[key] = request.json['key']
+        exec(f'job.{key}=request.json[key]')
 
-    db_sess.merge(job)
+    # db_sess.merge(job)
     db_sess.commit()
     return jsonify({'success': 'OK'})
