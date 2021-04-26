@@ -89,26 +89,33 @@ def post_user():
     try:
         if not request.json:
             return jsonify({'error': 'Empty request'}), 400
-        elif not all(key in request.json for key in
-                     ['surname', 'name', 'age', 'position', 'speciality',
-                      'address', 'email', 'password', 'city_from', 'departament_id']):
+        elif not all(key in ['surname', 'name', 'age', 'position', 'speciality',
+                             'address', 'email', 'password', 'city_from', 'departament_id'] for key in
+                     request.json):
             return jsonify({'error': 'Bad request'}), 400
 
         db_sess = create_session()
         user = User()
-        user.surname = request.json['surname']
-        user.name = request.json['name']
-        user.age = request.json['age']
-        user.position = request.json['position']
-        user.speciality = request.json['speciality']
-        user.address = request.json['address']
-        user.email = request.json['email']
-        user.password = request.json['password']
+        if 'surname' in request.json:
+            user.surname = request.json['surname']
+        if 'name' in request.json:
+            user.name = request.json['name']
+        if 'age' in request.json:
+            user.age = request.json['age']
+        if 'position' in request.json:
+            user.position = request.json['position']
+        if 'speciality' in request.json:
+            user.speciality = request.json['speciality']
+        if 'address' in request.json:
+            user.address = request.json['address']
+        if 'email' in request.json:
+            user.email = request.json['email']
         user.city_from = request.json['city_from']
-        departament = db_sess.query(Departament).filter(Departament.id == request.json['departament_id'])
-        if not departament:
-            raise NotFoundError('departament')
-        user.departament = departament
+        if 'departament_id' in request.json:
+            departament = db_sess.query(Departament).filter(Departament.id == request.json['departament_id'])
+            if not departament:
+                raise NotFoundError('departament')
+            user.departament = departament
 
         user.hashed_password = generate_password_hash(request.json['password'])
         user.modified_date = datetime.datetime.now()

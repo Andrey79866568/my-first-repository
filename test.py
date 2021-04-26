@@ -1,16 +1,15 @@
 from requests import get, post, delete, put
 
-print(get('http://localhost:8080/api/jobs').json())
-
-
-print(put('http://localhost:8080/api/jobs/3').json())
-
-print(put('http://localhost:8080/api/jobs/993', json={'ss': 'adfds'}).json())
-
-print(put('http://localhost:8080/api/jobs/sdfssaaw').json())
-
-print(put('http://localhost:8080/api/jobs/6', json={'collaborators': 'all peoples',
-                                                    'category_id': 2}).json())
+# print(get('http://localhost:8080/api/jobs').json())
+#
+# print(put('http://localhost:8080/api/jobs/3').json())
+#
+# print(put('http://localhost:8080/api/jobs/993', json={'ss': 'adfds'}).json())
+#
+# print(put('http://localhost:8080/api/jobs/sdfssaaw').json())
+#
+# print(put('http://localhost:8080/api/jobs/6', json={'collaborators': 'all peoples',
+#                                                     'category_id': 2}).json())
 
 '''
 print(delete('http://localhost:8080/api/jobs').json())
@@ -46,4 +45,18 @@ print(delete('http://localhost:8080/api/jobs/6').json())
 #                  'category_id': 3}).json())
 
 
-print(get('http://localhost:8080/api/jobs').json())
+# print(get('http://localhost:8080/api/jobs').json())
+
+print(post('http://localhost:8080/api/users', json={
+    'surname': 'Сидоров',
+    'name': 'dsdssd asda',
+    'age': 22,
+    'position': 'bully',
+    'speciality': 'bully',
+    'address': 'none',
+    'email': 'none@none.nan',
+    'password': 'really?',
+    'city_from': 'Dallas'}).json())
+
+print(get('http://localhost:8080/api/users/1').json())
+
