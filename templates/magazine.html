@@ -23,7 +23,7 @@
                     <td>{{work.team_leader}}</td>
                     <td>{{work.work_size}}</td>
                     <td>{{work.collaborators}}</td>
-                    <td>{{work.category.name}}</td>
+                    <td>{{[i.name for i in work.categories]}}</td>
                     <td>{{work.is_finished}}</td>
                 </tr>
                 </tbody>

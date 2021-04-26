@@ -11,14 +11,6 @@ from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
 
 
-class Category(SqlAlchemyBase, SerializerMixin):
-    __tablename__ = 'categories'
-    id = sqlalchemy.Column(sqlalchemy.Integer,
-                           primary_key=True, autoincrement=True)
-    name = sqlalchemy.Column(sqlalchemy.String)
-    jobs = orm.relation("Jobs", back_populates='category')
-
-
 class AddJob(FlaskForm):
     team_leader = IntegerField('Лидер команды')
     job = TextAreaField("Содержание")
@@ -26,6 +18,23 @@ class AddJob(FlaskForm):
     collaborators = StringField("Поле для хранения id работников")
     category = IntegerField("Category")
     submit = SubmitField('Сделать')
+
+
+class Category(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = 'categories'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    name = sqlalchemy.Column(sqlalchemy.String)
+
+
+association_table = sqlalchemy.Table(
+    'association',
+    SqlAlchemyBase.metadata,
+    sqlalchemy.Column('news', sqlalchemy.Integer,
+                      sqlalchemy.ForeignKey('news.id')),
+    sqlalchemy.Column('category', sqlalchemy.Integer,
+                      sqlalchemy.ForeignKey('category.id'))
+)
 
 
 class Jobs(SqlAlchemyBase, SerializerMixin):
@@ -40,9 +49,9 @@ class Jobs(SqlAlchemyBase, SerializerMixin):
     start_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     end_date = sqlalchemy.Column(sqlalchemy.DateTime)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
-    category_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                    sqlalchemy.ForeignKey("categories.id"))
-    category = orm.relation('Category')
+    categories = orm.relation("Category",
+                              secondary="association",
+                              backref="news")
 
 
 class RegisterForm(FlaskForm):
