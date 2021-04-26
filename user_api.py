@@ -103,7 +103,6 @@ def post_user():
         user.speciality = request.json['speciality']
         user.address = request.json['address']
         user.email = request.json['email']
-        user.password = request.json['password']
         user.city_from = request.json['city_from']
         departament = db_sess.query(Departament).filter(Departament.id == request.json['departament_id'])
         if not departament:
