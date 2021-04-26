@@ -28,7 +28,7 @@ def sample_file_upload():
                                         <label for="photo">Приложите фотографию.</label>
                                         <input type="file" class="form-control-file" id="photo" name="file">
                                         <label>~~~~~~~~~~~~~~~~~~~~~~~~</label>
-                                        <img src="{url_for('static', filename='images/robot.jpg')}" 
+                                        <img src="{url_for('static', filename='images/mar.png')}" 
                                             alt="здесь должна была быть картинка, но не нашлась">
                                     </div>
                                     <button type="submit" class="btn btn-primary">Отправить</button>
@@ -39,8 +39,7 @@ def sample_file_upload():
     elif request.method == 'POST':
         f = request.files['file']
         with open(os.path.join('static', 'images',  'request_image.jpg'), 'wb') as file:
-            for i in f.readlines():
-                file.write(i)
+            file.write(f.read())
         return f'''<img src="{url_for('static', filename='images/request_image.jpg')}">'''
 
 
