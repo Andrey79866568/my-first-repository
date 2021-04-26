@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired
 from sqlalch_data.data.db_session import *
 from sqlalch_data.data.__all_models import *
 import jobs_api
+import user_api
 import json
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 
@@ -18,6 +19,7 @@ params['oldest'] = 20
 params['style'] = '/static/css/style.css'
 
 app.register_blueprint(jobs_api.blueprint)
+app.register_blueprint(user_api.blueprint)
 
 global_init('sqlalch_data/db/mars.db')
 db_sess = create_session()
