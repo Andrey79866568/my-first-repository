@@ -1,12 +1,10 @@
 from flask import Flask, make_response, url_for, jsonify, request, render_template, redirect, abort
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired
+from errors import *
 from sqlalch_data.data.db_session import *
 from sqlalch_data.data.__all_models import *
 import jobs_api
 import user_api
-import json
+from helpful import get_town_photo
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 
 app = Flask(__name__)
@@ -36,6 +34,19 @@ def not_found(error):
 @login_manager.user_loader
 def load_user(user_id):
     return db_sess.query(User).get(user_id)
+
+
+@app.route('/city_from/<int:user_id>')
+def city_from(user_id):
+    try:
+        db_sess = create_session()
+        user: User = db_sess.query(User).get(user_id)
+        if not user:
+            raise NotFoundError('user')
+        get_town_photo(user.city_from)
+        return render_template('for_rodnoi_gorod.html', **params)
+    except NotFoundError as error:
+        return jsonify({'message': {'name': f'{str(error)} not found'}}), 404
 
 
 @app.route('/login', methods=['GET', 'POST'])

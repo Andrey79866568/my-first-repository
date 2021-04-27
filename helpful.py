@@ -1,3 +1,5 @@
+import random
+
 import requests
 
 url = "http://geocode-maps.yandex.ru/1.x"
@@ -16,10 +18,10 @@ def get_town_photo(town):
         toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
         coords = toponym['Point']['pos'].split()
 
-        pikch = requests.get(url_image, {'ll': ','.join(coords), 'z': 11, 'l': 'sat'})
+        pikch = requests.get(url_image,
+                             {'ll': ','.join(coords), 'z': 14, 'l': random.choice(['sat', 'map', 'sat,skl'])})
         if pikch:
-            print(pikch.content)
-            with open('town.jpg', 'wb') as f:
+            with open('static/images/town.jpg', 'wb') as f:
                 f.write(pikch.content)
 
 
